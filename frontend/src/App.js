@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { HomeOutlined, UserOutlined, TeamOutlined } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Select } from "antd";
 import { Router } from "./navigation/Router";
+import { GET_USERS } from "./graphql/queries/usersQueries";
+import { useQuery } from "@apollo/client";
+
 const { Sider } = Layout;
+
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -19,6 +23,7 @@ const items = [
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
   const currentPath = window.location.pathname;
+  const getUser = useQuery(GET_USERS);
 
   return (
     <Layout
@@ -48,6 +53,29 @@ const App = () => {
           ]}
           mode="inline"
           items={items}
+        />
+        <Select
+          style={{ marginTop: 10, width: "100%", padding: 10 }}
+          showSearch
+          placeholder="Chercher un utilisateur"
+          optionFilterProp="children"
+          onChange={(value) =>
+            window.location.assign(
+              `/profile/${value.toLowerCase().replace(" ", "-")}`
+            )
+          }
+          onSearch={(value) =>
+            window.location.assign(
+              `/profile/${value.toLowerCase().replace(" ", "-")}`
+            )
+          }
+          filterOption={(input, option) =>
+            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+          }
+          options={getUser.data?.users?.data?.map((user) => ({
+            label: user.attributes.username,
+            value: user.attributes.username,
+          }))}
         />
       </Sider>
       <Layout className="site-layout" style={{ padding: "5%" }}>
