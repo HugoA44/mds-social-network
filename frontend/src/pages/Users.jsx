@@ -6,10 +6,11 @@ import { Card, Image, Row, Tag, Typography } from "antd";
 import { useQuery } from "@apollo/client";
 import { GET_POSTS } from "../graphql/queries/postsQueries";
 import { GET_USER, GET_USERS } from "../graphql/queries/usersQueries";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const Users = () => {
   const getUser = useQuery(GET_USERS);
+  const navigate = useNavigate();
 
   const users = getUser?.data?.users?.data;
 
@@ -27,24 +28,24 @@ export const Users = () => {
     <div>
       <Row style={{ marginTop: "2rem" }}>
         {users?.map((user) => (
-          <a
+          <Card
             key={user.id}
-            href={`/profile/${user?.attributes?.username}`}
-            style={{ width: "20%", marginRight: "2rem" }}
+            onClick={() =>
+              navigate(`/profile/${user?.attributes?.username.toLowerCase()}`)
+            }
+            style={{ width: "20%", marginRight: "2rem", cursor: "pointer" }}
           >
-            <Card key={user.id}>
-              <Avatar style={{ flex: 1 }} />
-              <h2>
-                {user?.attributes?.username?.charAt(0).toUpperCase() +
-                  user?.attributes?.username?.slice(1)}
-              </h2>
-              <Tag color="blue-inverse">{user.attributes.email}</Tag>
-              <p>
-                {user.attributes.posts?.data?.length} publication
-                {user.attributes.posts?.data?.length > 1 && "s"}
-              </p>
-            </Card>
-          </a>
+            <Avatar style={{ flex: 1 }} />
+            <h2>
+              {user?.attributes?.username?.charAt(0).toUpperCase() +
+                user?.attributes?.username?.slice(1)}
+            </h2>
+            <Tag color="blue-inverse">{user.attributes.email}</Tag>
+            <p>
+              {user.attributes.posts?.data?.length} publication
+              {user.attributes.posts?.data?.length > 1 && "s"}
+            </p>
+          </Card>
         ))}
       </Row>
     </div>

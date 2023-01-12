@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_USERS = gql`
   query GetUsers($username: String) {
-    users: usersPermissionsUsers(filters: { username: { eq: $username } }) {
+    users: usersPermissionsUsers(filters: { username: { eqi: $username } }) {
       data {
         id
         attributes {
